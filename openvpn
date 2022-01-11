@@ -1,0 +1,68 @@
+#!/usr/bin/python3
+import os
+import tkinter as tk
+import tkinterdnd2
+from tkinter.constants import ACTIVE, LEFT, RIGHT
+from tkinterdnd2 import *
+from tkinter import Button, Label, Listbox, filedialog
+from tkinter import messagebox
+
+# OpenVPN GUI Version for Linux
+# Code by Mugi F.
+# My Github http://github.com/mugi789
+
+# tkinter
+root = tk.Tk()
+root.title("OpenVPN GUI Version")
+root.geometry('450x300')
+
+# script open file
+def click():
+    filename = filedialog.askopenfilename(
+        title='Open File Config',
+        initialdir=os.getcwd(),
+        filetypes=(
+        ('Config VPN', '*.ovpn'),
+        ('All Files', '*.*')
+    ))
+    if filename:
+        os.popen("xterm -e 'sudo openvpn --config "+filename+"'").read()
+    else:
+        root
+
+# script dnd
+def drags():
+    top = tkinterdnd2.Tk()
+    top.title("OpenVPN GUI Version")
+    top.geometry("450x300")
+    Label(top).pack(pady=3)
+    Label(top, text="Drag and Drop VPN Config to Here").pack()
+    Label(top).pack()
+    def input(event):
+        lb.insert("end", event.data)
+    lb = Listbox(top, width=37, height=6)
+    lb.pack()
+    lb.drop_target_register(DND_FILES)
+    lb.dnd_bind('<<Drop>>', input)
+    # command
+    def cmd():
+        os.popen("xterm -e 'sudo openvpn --config "+lb.get(ACTIVE)+"'").read()
+    Button(top, text="  Select ", command=cmd).pack(side=RIGHT, padx=50)
+    Button(top, text="   Back  ", command=top.destroy).pack(side=LEFT, padx=50)
+
+# tombol keluar
+def keluar():
+    iya = messagebox.askquestion("Warning",
+    "Do You Want to Exit? ?",
+    icon='question')
+    if iya == 'yes':
+       root.destroy()
+    else:
+        root
+
+# menu awal
+Label(root, text="OpenVPN GUI Version for Linux\r\nCreated by Mugi Fadilah\nhttp://github.com/mugi789").pack(pady=20)
+Button(root, text="-= Open Config =-", command=click).pack()
+Button(root, text="-= Drag and Drop =-", command=drags).pack()
+Button(root, text="-== Exit ==-", command=keluar).pack(expand=True)
+tk.mainloop()
