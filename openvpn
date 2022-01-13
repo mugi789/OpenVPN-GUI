@@ -4,7 +4,7 @@ import tkinter as tk
 import tkinterdnd2
 from tkinter.constants import ACTIVE, LEFT, RIGHT
 from tkinterdnd2 import *
-from tkinter import Button, Label, Listbox, filedialog
+from tkinter import END, Button, Label, Listbox, filedialog
 from tkinter import messagebox
 
 # OpenVPN GUI Version for Linux
@@ -40,13 +40,15 @@ def drags():
     Label(top).pack()
     def input(event):
         lb.insert("end", event.data)
-    lb = Listbox(top, width=37, height=6)
+    lb = Listbox(top, width=37, height=5)
     lb.pack()
     lb.drop_target_register(DND_FILES)
     lb.dnd_bind('<<Drop>>', input)
-    # command
     def cmd():
         os.popen("xterm -e 'sudo openvpn --config "+lb.get(ACTIVE)+"'").read()
+    def clear():
+        lb.delete(0, END)
+    Button(top, text="  Clear  ", command=clear).pack(pady=8)
     Button(top, text="  Select ", command=cmd).pack(side=RIGHT, padx=50)
     Button(top, text="   Back  ", command=top.destroy).pack(side=LEFT, padx=50)
 
@@ -62,7 +64,7 @@ def keluar():
 
 # menu awal
 Label(root, text="OpenVPN GUI Version for Linux\r\nCreated by Mugi Fadilah\nhttp://github.com/mugi789").pack(pady=20)
-Button(root, text="-= Open Config =-", command=click).pack()
+Button(root, text=" -= Open Config =- ", command=click).pack()
 Button(root, text="-= Drag and Drop =-", command=drags).pack()
 Button(root, text="-== Exit ==-", command=keluar).pack(expand=True)
 tk.mainloop()
